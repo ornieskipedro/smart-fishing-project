@@ -16,7 +16,7 @@ export default function WeatherGrid({ data }) {
     return (
         <div className="grid grid-cols-2 gap-4 h-full">
             {cards.map((item, idx) => (
-                <div key={idx} className="glass-panel p-5 flex flex-col items-start justify-center hover:bg-white/5 transition-colors group">
+                <div key={idx} className="glass-panel p-4 md:p-5 flex flex-col items-start justify-center hover:bg-white/5 transition-colors group">
                     <div className="mb-3 p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
                         <item.icon className="w-5 h-5 text-primary opacity-80" />
                     </div>

@@ -18,7 +18,7 @@ function App() {
   }, [apiKey]);
 
   return (
-    <div className="min-h-screen p-6 md:p-12 flex flex-col items-center justify-center font-sans tracking-tight">
+    <div className="min-h-screen p-4 md:p-12 flex flex-col items-center justify-center font-sans tracking-tight">
 
 
 

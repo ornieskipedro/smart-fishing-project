@@ -29,7 +29,7 @@ export default function PressureChart({ currentPressure }) {
     }, [currentPressure]);
 
     return (
-        <div className="glass-panel p-6 h-full flex flex-col justify-between min-h-[250px]">
+        <div className="glass-panel p-4 md:p-6 h-full flex flex-col justify-between min-h-[250px]">
             <div className="mb-4 flex flex-col">
                 <h3 className="text-sm font-medium text-gray-400 uppercase tracking-widest">Tendência Barométrica</h3>
                 <span className="text-xs text-gray-600">Últimas 6 horas</span>
