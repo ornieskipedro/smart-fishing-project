@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Key } from 'lucide-react';
 
 export default function ApiKeyInput({ apiKey, setApiKey }) {
-    const [showInput, setShowInput] = useState(!apiKey);
+    const [showInput, setShowInput] = useState(false);
     const [val, setVal] = useState(apiKey || '');
 
     const handleSave = () => {
