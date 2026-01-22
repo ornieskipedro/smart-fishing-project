@@ -1,69 +1,78 @@
 import React, { useMemo } from 'react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 export default function PressureChart({ currentPressure }) {
 
-    // Generate mock history ending at currentPressure
     const data = useMemo(() => {
         if (!currentPressure) return [];
 
+        // Simulate trend relative to current
         const history = [];
         const now = new Date();
 
-        // Generate last 6 hours
         for (let i = 6; i >= 0; i--) {
             const time = new Date(now.getTime() - i * 60 * 60 * 1000);
-            // Random fluctuation around current pressure +/- 2 hPa
-            // Ensure the *last* point (i=0) is exactly the current pressure
             let val;
             if (i === 0) {
                 val = currentPressure;
             } else {
-                // Create a trend. mostly stable.
-                val = currentPressure + (Math.random() * 4 - 2);
+                // Subtle variance
+                val = currentPressure + (Math.random() * 3 - 1.5);
             }
 
             history.push({
                 time: time.getHours() + ':00',
-                pressure: Math.round(val)
+                pressure: Number(val.toFixed(1))
             });
         }
         return history;
     }, [currentPressure]);
 
     return (
-        <div className="glass-panel p-6 h-full flex flex-col">
-            <h3 className="text-xl font-bold mb-4 text-slate-300">Tendência de Pressão (6h)</h3>
-            <div className="flex-1 w-full min-h-[200px]">
+        <div className="glass-panel p-6 h-full flex flex-col justify-between min-h-[250px]">
+            <div className="mb-4 flex flex-col">
+                <h3 className="text-sm font-medium text-gray-400 uppercase tracking-widest">Tendência Barométrica</h3>
+                <span className="text-xs text-gray-600">Últimas 6 horas</span>
+            </div>
+
+            <div className="flex-1 w-full relative -ml-2">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data}>
                         <defs>
                             <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#64ffda" stopOpacity={0.3} />
-                                <stop offset="95%" stopColor="#64ffda" stopOpacity={0} />
+                                <stop offset="5%" stopColor="#5eb3b7" stopOpacity={0.2} />
+                                <stop offset="95%" stopColor="#5eb3b7" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#233554" />
-                        <XAxis dataKey="time" stroke="#8892b0" fontSize={12} tickLine={false} />
-                        <YAxis domain={['auto', 'auto']} stroke="#8892b0" fontSize={12} tickLine={false} />
+                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#ffffff10" />
+                        <XAxis
+                            dataKey="time"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: '#6b7280', fontSize: 10 }}
+                            dy={10}
+                        />
                         <Tooltip
-                            contentStyle={{ backgroundColor: '#112240', border: '1px solid #233554', color: '#fff' }}
-                            itemStyle={{ color: '#64ffda' }}
+                            contentStyle={{
+                                backgroundColor: '#2d2d2d',
+                                borderColor: 'rgba(255,255,255,0.05)',
+                                borderRadius: '8px',
+                                color: '#f5f5f5',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
+                            }}
+                            itemStyle={{ color: '#5eb3b7' }}
+                            formatter={(value) => [`${value} hPa`, 'Pressão']}
                         />
                         <Area
                             type="monotone"
                             dataKey="pressure"
-                            stroke="#64ffda"
-                            strokeWidth={3}
-                            fillOpacity={1}
+                            stroke="#5eb3b7"
+                            strokeWidth={2}
                             fill="url(#colorPv)"
                         />
                     </AreaChart>
                 </ResponsiveContainer>
             </div>
-            <p className="text-sm text-slate-500 mt-2 text-center italic">
-                *Histórico simulado baseado na leitura atual
-            </p>
         </div>
     );
 }
