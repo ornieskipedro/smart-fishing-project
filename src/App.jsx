@@ -1,36 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useWeather } from './hooks/useWeather';
 import ReferenceCard from './components/ReferenceCard';
 import WeatherGrid from './components/WeatherGrid';
 import PressureChart from './components/PressureChart';
 import CitySelector from './components/CitySelector';
-import ApiKeyInput from './components/ApiKeyInput';
 import { Anchor } from 'lucide-react';
 
 function App() {
   const [city, setCity] = useState("Piraquara");
-  /* 
-   * Initialize API Key:
-   * 1. Environment Variable (Highest Priority)
-   * 2. Local Storage
-   * 3. Empty (Simulation Mode)
-   */
-  const [apiKey, setApiKey] = useState(() => {
-    const envKey = import.meta.env.VITE_WEATHER_API_KEY;
-    if (envKey) return envKey;
-    return localStorage.getItem("fishing_api_key") || "";
-  });
+
+  // Directly use the API key from the environment
+  const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
 
   const { data, loading, error, refetch } = useWeather(city, apiKey);
-
-  // Sync: If env var exists, always enforce it over local storage artifacts
-  useEffect(() => {
-    const envKey = import.meta.env.VITE_WEATHER_API_KEY;
-    if (envKey && apiKey !== envKey) {
-      setApiKey(envKey);
-    }
-    if (apiKey) localStorage.setItem("fishing_api_key", apiKey);
-  }, [apiKey]);
 
   return (
     <div className="min-h-screen p-4 md:p-12 flex flex-col items-center justify-start md:justify-center font-sans tracking-tight">
@@ -98,8 +80,6 @@ function App() {
           <span className="w-1 h-1 rounded-full bg-gray-700"></span>
           <span>dados reais pela OpenWeather</span>
         </div>
-
-        <ApiKeyInput apiKey={apiKey} setApiKey={setApiKey} />
       </footer>
     </div>
   );
