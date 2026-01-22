@@ -14,7 +14,7 @@ export default function CitySelector({ currentCity, onCityChange }) {
     };
 
     return (
-        <div className="flex flex-col w-full mb-6">
+        <div className="flex flex-col w-full mb-6 relative z-50">
             <form onSubmit={handleSubmit} className="relative flex flex-col md:flex-row items-center w-full gap-4 md:gap-0">
 
                 {/* Search Input Container */}

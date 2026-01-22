@@ -18,7 +18,7 @@ function App() {
   }, [apiKey]);
 
   return (
-    <div className="min-h-screen p-4 md:p-12 flex flex-col items-center justify-center font-sans tracking-tight">
+    <div className="min-h-screen p-4 md:p-12 flex flex-col items-center justify-start md:justify-center font-sans tracking-tight">
 
 
 
@@ -84,9 +84,7 @@ function App() {
           <span>dados reais pela OpenWeather</span>
         </div>
 
-        <div className="opacity-0 hover:opacity-100 transition-opacity duration-500">
-          <ApiKeyInput apiKey={apiKey} setApiKey={setApiKey} />
-        </div>
+        <ApiKeyInput apiKey={apiKey} setApiKey={setApiKey} />
       </footer>
     </div>
   );
