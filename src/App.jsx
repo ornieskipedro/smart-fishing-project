@@ -9,11 +9,26 @@ import { Anchor } from 'lucide-react';
 
 function App() {
   const [city, setCity] = useState("Piraquara");
-  const [apiKey, setApiKey] = useState(() => import.meta.env.VITE_WEATHER_API_KEY || localStorage.getItem("fishing_api_key") || "");
+  /* 
+   * Initialize API Key:
+   * 1. Environment Variable (Highest Priority)
+   * 2. Local Storage
+   * 3. Empty (Simulation Mode)
+   */
+  const [apiKey, setApiKey] = useState(() => {
+    const envKey = import.meta.env.VITE_WEATHER_API_KEY;
+    if (envKey) return envKey;
+    return localStorage.getItem("fishing_api_key") || "";
+  });
 
   const { data, loading, error, refetch } = useWeather(city, apiKey);
 
+  // Sync: If env var exists, always enforce it over local storage artifacts
   useEffect(() => {
+    const envKey = import.meta.env.VITE_WEATHER_API_KEY;
+    if (envKey && apiKey !== envKey) {
+      setApiKey(envKey);
+    }
     if (apiKey) localStorage.setItem("fishing_api_key", apiKey);
   }, [apiKey]);
 
