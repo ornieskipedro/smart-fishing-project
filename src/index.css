@@ -1,34 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ocean-900: #1a1a1a;
-  /* Dark Graphite */
-  --color-ocean-800: #2d2d2d;
-  /* Dark Gray */
-  --color-ocean-700: #3a3a3a;
-  /* Card Background */
-  --color-ocean-600: #4a4a4a;
-  /* Borders/Accents */
+  /* New Light Theme Palette */
+  --color-ocean-900: #f0f9ff;
+  /* sky-50 - Main Background */
 
-  --color-primary: #5eb3b7;
-  /* Soft Teal */
-  --color-secondary: #4a9ead;
-  /* Petrol Blue */
+  --color-primary: #0ea5e9;
+  /* sky-500 */
+  --color-secondary: #06b6d4;
+  /* cyan-500 */
 
-  --color-accent-amber: #e8a547;
-  /* Soft Amber */
-  --color-text-main: #f5f5f5;
+  --color-accent-amber: #f59e0b;
+  /* amber-500 */
+  --color-text-main: #1e293b;
+  /* slate-800 */
+  --color-text-muted: #64748b;
+  /* slate-500 */
 
   --font-sans: 'Inter', 'system-ui', 'sans-serif';
 }
 
 @layer base {
   body {
-    @apply bg-ocean-900 text-text-main antialiased selection:bg-primary/30;
+    @apply bg-gradient-to-br from-sky-50 via-blue-50 to-cyan-50 text-text-main antialiased min-h-screen;
   }
 }
 
 .glass-panel {
-  /* Reduced border visibility, softer shadow, 80% opacity */
-  @apply bg-ocean-700/80 backdrop-blur-md border border-white/5 rounded-xl shadow-lg;
+  @apply bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300;
 }

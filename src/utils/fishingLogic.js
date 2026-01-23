@@ -1,71 +1,81 @@
 /**
- * Calculate the Fishing Index Score (0-10) and Message.
- * 
- * Rules:
- * Pressure (P): Ideal 1013-1018. 
- *  - If < 1005: Penalty -5
- *  - If > 1025: Penalty -3
- *  - Else (non-ideal): Penalty -2 (Generalizing for the gaps)
- * 
- * Wind (W):
- *  - Ideal < 12 km/h: No penalty
- *  - 15-25 km/h: Reduce total score by 40%
- *  - > 30 km/h: Score = 0
- * 
- * @param {number} pressure - Atmospheric pressure in hPa
- * @param {number} windSpeed - Wind speed in km/h
- * @returns {{score: number, message: string, color: string}}
+ * Smart Fishing Dashboard 2.0 Logic
  */
-export function calculateFishingIndex(pressure, windSpeed) {
-    let score = 10;
 
-    // 1. Pressure Logic
-    if (pressure >= 1013 && pressure <= 1018) {
-        // Ideal range, no penalty
-    } else if (pressure < 1005) {
-        score -= 5;
-    } else if (pressure > 1025) {
-        score -= 3;
-    } else {
-        // In between non-ideal ranges (1005-1012, 1019-1025)
+export const idealConditions = {
+    temperature: { min: 15, max: 28, optimal: 22 },
+    windSpeed: { min: 0, max: 15, optimal: 5 },
+    pressure: { min: 1013, max: 1023, optimal: 1020 },
+    humidity: { min: 40, max: 80, optimal: 60 }
+};
+
+/**
+ * Calculates a 0-10 fishing score based on weather conditions.
+ * @param {Object} data - { temperature, windSpeed, pressure, humidity }
+ * @returns {number} Score from 0 to 10
+ */
+export function calculateFishingScore(data) {
+    let score = 10;
+    const { temp, windSpeed, pressure, humidity } = data; // Note: input uses 'temp' usually from API
+
+    // Penalties
+    // Temperature
+    if (temp < idealConditions.temperature.min || temp > idealConditions.temperature.max) {
         score -= 2;
     }
 
-    // Ensure intermediate score doesn't go below 0 before wind multiplier
-    score = Math.max(0, score);
-
-    // 2. Wind Logic
-    if (windSpeed > 30) {
-        score = 0;
-    } else if (windSpeed >= 15 && windSpeed <= 25) {
-        score = score * 0.6; // Reduce by 40%
-    }
-    // If wind < 12 or 12-15 (gap not defined strictly, assume safe), keep score.
-    // Actually, user said "Ideal below 12". "15-25 reduce". "Above 30 zero". 
-    // The gap 12-15 is ambiguous, but let's assume slight penalty or safe. Safe is better for user.
-    // Let's apply a small penalty for 12-15 to be nuanced? Or just leave it. 
-    // Let's leave it as safe for now, or apply the 40% if closer to 15? 
-    // User instruction: "Entre 15-25km/h reduza a nota em 40%". 
-    // So 12-14.9 is safe.
-
-    // 3. Final Formatting
-    score = Math.round(score * 10) / 10; // Round to 1 decimal place if needed, or integer? User sample was integer range "8-10".
-    score = Math.round(score); // Let's simplify to integers for the UI usage.
-
-    // 4. Determine Message & Color
-    let message = "";
-    let color = ""; // simplified status identifier: 'green', 'yellow', 'red'
-
-    if (score >= 8) {
-        message = "Peixe na linha! Condições perfeitas.";
-        color = "green";
-    } else if (score >= 5) {
-        message = "Bom, mas exija paciência. Vento moderado.";
-        color = "yellow";
-    } else {
-        message = "Melhor ficar no trapiche. Condições desfavoráveis.";
-        color = "red";
+    // Wind
+    if (windSpeed > idealConditions.windSpeed.max) {
+        score -= 3;
     }
 
-    return { score, message, color };
+    // Pressure
+    if (pressure < idealConditions.pressure.min || pressure > idealConditions.pressure.max) {
+        score -= 2;
+    }
+
+    // Humidity
+    if (humidity < idealConditions.humidity.min || humidity > idealConditions.humidity.max) {
+        score -= 1;
+    }
+
+    return Math.max(0, score);
+}
+
+/**
+ * Returns dynamic UI properties based on the score.
+ * @param {number} score 
+ * @returns {{title: string, message: string, gradient: string, colorClass: string}}
+ */
+export function getConditionMessage(score) {
+    if (score >= 9) return {
+        title: 'Condições Ideais!',
+        message: 'Peixe na linha! Momento perfeito para pescar.',
+        gradient: 'from-cyan-500 to-blue-600',
+        colorClass: 'text-cyan-600'
+    };
+    if (score >= 7) return {
+        title: 'Condições Boas',
+        message: 'Ótimo momento para uma pescaria produtiva.',
+        gradient: 'from-green-500 to-emerald-600',
+        colorClass: 'text-green-600'
+    };
+    if (score >= 5) return {
+        title: 'Condições Regulares',
+        message: 'Dá pra pescar, mas não é o ideal.',
+        gradient: 'from-yellow-500 to-orange-600',
+        colorClass: 'text-yellow-600'
+    };
+    if (score >= 3) return {
+        title: 'Condições Ruins',
+        message: 'Melhor aguardar condições melhores.',
+        gradient: 'from-orange-500 to-red-600',
+        colorClass: 'text-orange-600'
+    };
+    return {
+        title: 'Condições Péssimas',
+        message: 'Não recomendado pescar agora.',
+        gradient: 'from-red-500 to-red-700',
+        colorClass: 'text-red-600'
+    };
 }

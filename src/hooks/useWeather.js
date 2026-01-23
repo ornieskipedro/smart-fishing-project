@@ -11,9 +11,14 @@ const getMockData = (city) => {
         temp: Math.round(baseTemp),
         pressure: Math.round(basePressure),
         windSpeed: Math.round(baseWind), // km/h
+        humidity: Math.round(40 + Math.random() * 40), // 40-80%
         description: "Céu Limpo (Simulação)",
         icon: "01d",
         city: city || "Simulação",
+        sys: {
+            sunrise: Math.floor(Date.now() / 1000) - 21600, // Now - 6h
+            sunset: Math.floor(Date.now() / 1000) + 21600   // Now + 6h
+        },
         timestamp: Date.now()
     };
 };
@@ -56,9 +61,14 @@ export function useWeather(city, apiKey) {
                 pressure: d.main.pressure,
                 // Convert m/s to km/h
                 windSpeed: Math.round(d.wind.speed * 3.6),
+                humidity: d.main.humidity,
                 description: d.weather[0].description,
                 icon: d.weather[0].icon,
                 city: d.name,
+                sys: {
+                    sunrise: d.sys.sunrise,
+                    sunset: d.sys.sunset
+                },
                 timestamp: Date.now()
             });
         } catch (err) {

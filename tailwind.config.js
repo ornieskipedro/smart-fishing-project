@@ -7,14 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        ocean: {
-          900: '#0a192f',
-          800: '#112240',
-          700: '#233554',
-          600: '#324a6e',
+        sky: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          // ... other defaults are available via regular tailwind classes, 
+          // but defining here explicitly ensures they aren't purged if we use dynamic classes
         },
-        primary: '#64ffda',
-        secondary: '#8892b0',
+        primary: '#0ea5e9',
+        secondary: '#06b6d4',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
